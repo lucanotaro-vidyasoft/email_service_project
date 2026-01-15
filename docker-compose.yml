@@ -1,0 +1,10 @@
+services:
+  email-sandbox:
+    build: .
+    container_name: email_sandbox_service
+    ports:
+      - "8080:8080"
+    environment:
+
+      SMTP_USER: "44ad57fa6a3a89"
+      SMTP_PASSWORD: "2e50a42d068864"
