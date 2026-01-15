@@ -1,6 +1,6 @@
 from pkg.dto.schemas import EmailRequest
 from pkg.utils.smtp_client import SmtpClient
-from pkg.templates import EMAIL_TEMPLATES
+from pkg.utils.templates import EMAIL_TEMPLATES
 
 class NotificationService:
     def __init__(self):
