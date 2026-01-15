@@ -1,31 +1,19 @@
-from pkg.dto.schemas import EmailRequest, EmailTypeEnum
+from pkg.dto.schemas import EmailRequest
 from pkg.utils.smtp_client import SmtpClient
+from pkg.templates import EMAIL_TEMPLATES
 
 class NotificationService:
     def __init__(self):
         self.smtp_client = SmtpClient()
 
     def process_request(self, request: EmailRequest):
-        user_name = request.metadata.get("user_name", "Utente non registrato :( ")
-        book_title = request.metadata.get("book_title", "Libro non registrato :( ")
-        
-        subject = ""
-        body = ""
 
-        if request.emailType == EmailTypeEnum.RESERVE:
-            subject = "Conferma Prenotazione"
-            body = (
-                f"Ciao {user_name},\n"
-                f"Hai prenotato: {book_title}.\n"
-                f"Questa è una test mail"
-            )
-            
-        elif request.emailType == EmailTypeEnum.RETURN:
-            subject = "Restituzione Avvenuta"
-            body = (
-                f"Ciao {user_name},\n"
-                f"Hai restituito: {book_title}."
-            )
+        template_func = EMAIL_TEMPLATES.get(request.emailType)
+
+        if not template_func:
+            raise ValueError(f"Template non trovato per: {request.emailType}")
+
+        subject, body = template_func(request.metadata)
 
         success = self.smtp_client.send(
             to_email=request.recipient_email,
